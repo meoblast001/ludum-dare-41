@@ -1,0 +1,21 @@
+{
+  "name": "ludum-dare-41",
+  "version": "1.0.0",
+  "description": "Ludum Dare 41 Game",
+  "main": "index.js",
+  "scripts": {
+    "build": "node node_modules/webpack/bin/webpack.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "excalibur": "^0.16.0"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.0.0",
+    "typescript": "^2.8.1",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
+  }
+}
