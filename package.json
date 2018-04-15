@@ -4,7 +4,8 @@
   "description": "Ludum Dare 41 Game",
   "main": "index.js",
   "scripts": {
-    "build": "node node_modules/webpack/bin/webpack.js"
+    "build": "node node_modules/webpack/bin/webpack.js",
+    "dev-run": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --content-base public/"
   },
   "author": "",
   "license": "MIT",
@@ -16,6 +17,7 @@
     "typescript": "^2.8.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "^4.5.0",
-    "webpack-cli": "^2.0.14"
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.3"
   }
 }

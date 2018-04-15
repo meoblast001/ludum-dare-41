@@ -6,7 +6,8 @@ module.exports = {
   entry: './src/Game.ts',
   output: {
     path: path.join(__dirname, 'public', 'dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: path.join(__dirname, 'public')
   },
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
