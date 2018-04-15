@@ -1,5 +1,5 @@
 import * as ex from 'excalibur';
-import Resources, { RID } from './Resources';
+import { RID, TextureResources } from './Resources';
 
 export default class GameplayScene extends ex.Scene {
   public static readonly Name = "GameplayScene";
@@ -9,7 +9,7 @@ export default class GameplayScene extends ex.Scene {
 
     // Create actor.
     let cross = new ex.Actor();
-    cross.addDrawing(Resources[RID.TextureCross] as ex.Texture);
+    cross.addDrawing(TextureResources[RID.TextureCross]);
     this.add(cross);
   }
 
