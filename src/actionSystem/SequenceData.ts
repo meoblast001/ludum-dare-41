@@ -17,7 +17,9 @@ export namespace SequenceAction {
     return subject.action == 'exec';
   }
 
-  export function isAChangeDefaultSequence(subject: SequenceAction): subject is ChangeDefaultSequence {
+  export function isAChangeDefaultSequence(subject: SequenceAction)
+    : subject is ChangeDefaultSequence
+  {
     return subject.action == 'change_def_seq';
   }
 }
