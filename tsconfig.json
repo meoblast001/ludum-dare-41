@@ -5,6 +5,7 @@
     "sourceMap": true,
     "strict": true,
     "noImplicitAny": true,
+    "module": "commonjs",
     "strictNullChecks": true
   },
   "include": [

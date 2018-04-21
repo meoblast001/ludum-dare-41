@@ -12,7 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "astar-typescript": "0.0.442",
-    "excalibur": "^0.16.0"
+    "excalibur": "^0.16.0",
+    "word-wrap": "^1.2.3"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^5.0.0",
