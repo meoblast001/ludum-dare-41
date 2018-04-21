@@ -2,9 +2,9 @@ import * as ex from 'excalibur';
 let wrap: ((input: string, options?: { width: number }) => string) = require('word-wrap'); 
 
 export class TextWindow extends ex.UIActor {
-  public constructor (engine: ex.Engine, displayText: string, onClose: () => void, col?: ex.Color) {
+  public constructor (engine: ex.Engine, onClose: () => void, displayText?: string, col?: ex.Color) {
     super()
-    this.labels = new Array(3);
+    this.labels = new Array(4);
     this.text = new Array();
     this.closeHandler = onClose;
     this.pos.x = 0;
@@ -12,7 +12,9 @@ export class TextWindow extends ex.UIActor {
     this.setWidth(engine.drawWidth);
     this.setHeight(engine.drawHeight / 4);
     this.color = ex.Color.White;
-    this.renew(displayText, engine, col);
+    if (displayText) {
+      this.renew(displayText, engine, col);
+    }
     this.on ('postupdate', this.adjOnSpace(engine, col));
     console.log(this.text.length);
   }

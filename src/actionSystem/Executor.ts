@@ -1,4 +1,5 @@
 import { SequenceCatalog, SequenceAction } from './SequenceData';
+import {TextWindow} from '../TextWindow';
 
 export interface ExecutionWorld {
   getExecutionActors(): ExecutionActor[];
@@ -17,11 +18,14 @@ export class Executor {
 
   private worldActorLookup: ExecutionActorLookup = {};
 
-  protected constructor(private sequenceData: SequenceCatalog) {
+  protected constructor(
+    private sequenceData: SequenceCatalog,
+    private engine: ex.Engine
+    ) {
   }
 
-  public static initialise(sequenceData: SequenceCatalog) {
-    Executor.singleton = new Executor(sequenceData);
+  public static initialise(engine: ex.Engine, sequenceData: SequenceCatalog) {
+    Executor.singleton = new Executor(sequenceData, engine);
   }
 
   public static getSingleton(): Executor {
@@ -39,7 +43,7 @@ export class Executor {
     : ExecutionSequence | null
   {
     if (sequence in this.sequenceData) {
-      return new ExecutionSequence(this.sequenceData[sequence], actor,
+      return new ExecutionSequence(this.engine, this.sequenceData[sequence], actor,
         this.worldActorLookup);
     } else {
       console.error(`Could not find sequence named "${sequence}".`)
@@ -52,10 +56,12 @@ export class ExecutionSequence {
   private actionIdx: number = 0;
 
   public constructor(
+    private engine: ex.Engine,
     private actions: SequenceAction[],
     private actor: ExecutionActor,
     private allActors: ExecutionActorLookup
   ) {
+    this.win = new TextWindow(this.engine, () => {});
   }
 
   public executeNext(): boolean {
@@ -66,9 +72,12 @@ export class ExecutionSequence {
     return false;
   }
 
+  private win: TextWindow;
+
   protected execute(action: SequenceAction) {
     if (SequenceAction.isASay(action)) {
       // TODO: Activate the text prompt with a say message.
+      this.win.renew(action.text, this.engine, action.color);
     } else if (SequenceAction.isAPrompt(action)) {
       // TODO: Activate the text prompt with a prompt message.
     } else if (SequenceAction.isAMove(action)) {

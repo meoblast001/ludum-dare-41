@@ -15,7 +15,7 @@ for (let resource in Resources) {
 }
 
 // Initialise the action system with configured sequences.
-Executor.initialise(require('../sequences/main.yml'));
+Executor.initialise(Game, require('../sequences/main.yml'));
 
 Game.start(Loader).then(() => {
   // Load all scenes (game modes).

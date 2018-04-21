@@ -30,6 +30,7 @@ export interface SequenceAction {
 
 export interface Say extends SequenceAction {
   text: string;
+  color?: ex.Color;
 }
 
 export interface Prompt extends Say {
