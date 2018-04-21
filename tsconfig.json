@@ -8,9 +8,13 @@
     "module": "commonjs",
     "strictNullChecks": true,
     "types": ["node"],
+    "skipLibCheck": true,
     "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "src/Game.ts"
+  ],
+  "exclude": [
+    "./node_modules"
   ]
 }
