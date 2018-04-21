@@ -2,10 +2,11 @@ import * as ex from 'excalibur';
 let wrap: ((input: string, options?: { width: number }) => string) = require('word-wrap'); 
 
 export class TextWindow extends ex.UIActor {
-  public constructor (engine: ex.Engine, displayText: string, col?: ex.Color) {
+  public constructor (engine: ex.Engine, displayText: string, onClose: () => void, col?: ex.Color) {
     super()
-    this.labels = new Array(2);
+    this.labels = new Array(3);
     this.text = new Array();
+    this.closeHandler = onClose;
     this.pos.x = 0;
     this.pos.y = engine.drawHeight - engine.drawHeight / 4;
     this.setWidth(engine.drawWidth);
@@ -30,11 +31,12 @@ export class TextWindow extends ex.UIActor {
 	    label.opacity = 1;
 	  }
         } else {
-          console.log("bye");
-          this.opacity = 0;
-	  for (var label of this.labels) {
-	    label.opacity = 0;
-	  }
+	  console.log("bye");
+          this.closeHandler();
+	  //this.opacity = 0;
+	  //for (var label of this.labels) {
+	  //  label.opacity = 0;
+	  //}
         }
       }
     }
@@ -56,6 +58,8 @@ export class TextWindow extends ex.UIActor {
 
   private labels: ex.Label[];
 
+  private closeHandler: () => void;
+
   private unLines(input: string, w: number): string[] {
   var inter = wrap(input, {width: 80});
     console.log(inter);
@@ -69,7 +73,7 @@ export class TextWindow extends ex.UIActor {
   private fillLabels(start: number, col?: ex.Color): void {
     for (var i: number = 0; i < this.labels.length; i++) {
       this.labels[i] = new ex.Label(this.lineAtIndex(this.index + i),
-        this.getWidth() / 2, 50 * (i + 1), 'Arial');
+        this.getWidth() / 2, 40 * (i + 1), 'Arial');
       this.labels[i].fontSize = 40;
       this.labels[i].textAlign = ex.TextAlign.Center;
       if (col) {
