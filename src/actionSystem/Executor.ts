@@ -7,7 +7,7 @@ export interface ExecutionWorld {
 
 export interface ExecutionActor {
   readonly name: string;
-  move(x: number, y: number): void;
+  move(target: [number, number]): void;
   changeDefaultSequence(sequence: string): void;
 }
 
@@ -81,7 +81,7 @@ export class ExecutionSequence {
     } else if (SequenceAction.isAPrompt(action)) {
       // TODO: Activate the text prompt with a prompt message.
     } else if (SequenceAction.isAMove(action)) {
-      this.actor.move(action.destination[0], action.destination[1]);
+      this.actor.move([action.destination[0], action.destination[1]]);
     } else if (SequenceAction.isAExec(action)) {
       // TODO: Execute special command.
     } else if (SequenceAction.isAChangeDefaultSequence(action)) {
