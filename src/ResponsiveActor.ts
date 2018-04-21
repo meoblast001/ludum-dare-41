@@ -1,4 +1,5 @@
 import * as ex from 'excalibur';
+import {Promise} from 'es6-promise';
 import * as path from 'pathfinding';
 import { Executor, ExecutionActor } from './actionSystem/Executor';
 
@@ -14,8 +15,6 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
     defSeq: string,
     private matrix: number[][],
     private tolerance: number = 0.1,
-    public res: () => void = () => {},
-    public rej: (val?: string) => void = () => {},
     config?: ex.IActorArgs)
   {
     super(config);
@@ -25,16 +24,19 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
     this.task = null;
   }
 
-  public move(target: [number, number]) {
-    // TODO: Perform move through A*.
-    this.task = new MovementTask(
-      this.gridPos,
-      target,
-      0.1, //tolerance for now
-      this.matrix,
-      this.res,
-      this.rej
-    );
+  public move(target: [number, number]): Promise<void>
+  {
+    return new Promise((res, rej) => {
+      // TODO: Perform move through A*.
+      this.task = new MovementTask(
+        this.gridPos,
+        target,
+        0.1, //tolerance for now
+        this.matrix,
+        res,
+        rej
+      );
+    });
   }
 
   public changeDefaultSequence(sequence: string) {

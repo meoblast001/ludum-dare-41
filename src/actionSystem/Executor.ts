@@ -11,7 +11,7 @@ export interface ExecutionWorld {
 
 export interface ExecutionActor {
   readonly name: string;
-  move(target: [number, number]): void;
+  move(target: [number, number]): Promise<void>;
   changeDefaultSequence(sequence: string): void;
 }
 
