@@ -12,13 +12,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "aastar": "^1.1.5",
     "es6-promise": "^4.2.4",
     "excalibur": "^0.16.0",
+    "pathfinding": "^0.4.18",
     "word-wrap": "^1.2.3"
   },
   "devDependencies": {
     "@types/node": "^9.6.6",
+    "@types/pathfinding": "0.0.2",
     "awesome-typescript-loader": "^5.0.0",
     "json-loader": "^0.5.7",
     "typescript": "^2.8.1",
