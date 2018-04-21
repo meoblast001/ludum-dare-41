@@ -1,23 +1,23 @@
 export type SequenceCatalog = { [name: string]: SequenceAction[] };
 
 export namespace SequenceAction {
-  function isASay(subject: SequenceAction): subject is Say {
+  export function isASay(subject: SequenceAction): subject is Say {
     return subject.action == 'say';
   }
 
-  function isAPrompt(subject: SequenceAction): subject is Prompt {
+  export function isAPrompt(subject: SequenceAction): subject is Prompt {
     return subject.action == 'prompt';
   }
 
-  function isAMove(subject: SequenceAction): subject is Move {
+  export function isAMove(subject: SequenceAction): subject is Move {
     return subject.action == 'move';
   }
 
-  function isAExec(subject: SequenceAction): subject is Exec {
+  export function isAExec(subject: SequenceAction): subject is Exec {
     return subject.action == 'exec';
   }
 
-  function isAChangeDefaultSequence(subject: SequenceAction): subject is ChangeDefaultSequence {
+  export function isAChangeDefaultSequence(subject: SequenceAction): subject is ChangeDefaultSequence {
     return subject.action == 'change_def_seq';
   }
 }
