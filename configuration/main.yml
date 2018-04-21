@@ -1,3 +1,4 @@
+startSeq: greeting
 player:
   texture: 'cross.png'
   position: [0, 0]
@@ -7,5 +8,5 @@ resources:
 actors:
   - name: 'friend'
     texture: 'cross.png'
-    defaultSeq: 'greeting'
+    defaultSeq: 'first_talk'
     position: [50, 50]

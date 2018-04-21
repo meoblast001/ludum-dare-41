@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "astar-typescript": "0.0.442",
+    "es6-promise": "^4.2.4",
     "excalibur": "^0.16.0",
     "word-wrap": "^1.2.3"
   },

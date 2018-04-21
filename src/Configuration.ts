@@ -1,4 +1,5 @@
 export interface Configuration {
+  startSeq: string;
   resources: Resources;
   player: Player;
   actors: Actor[];

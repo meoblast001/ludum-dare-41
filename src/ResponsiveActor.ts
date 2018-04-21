@@ -1,6 +1,6 @@
 import * as ex from 'excalibur';
 import * as astar from 'astar-typescript/main';
-import { ExecutionActor } from './actionSystem/Executor';
+import { ExecutionActor, Executor } from './actionSystem/Executor';
 
 export class ResponsiveActor extends ex.Actor implements ExecutionActor
 {
@@ -39,5 +39,9 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
 
   public get defaultSequence(): string {
     return this._defaultSequence;
+  }
+
+  public executeDefaultSequence() {
+    Executor.getSingleton().beginAction(this, this._defaultSequence);
   }
 }

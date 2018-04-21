@@ -1,3 +1,5 @@
+import * as ex from 'excalibur';
+import { Promise } from 'es6-promise';
 import { SequenceCatalog, SequenceAction } from './SequenceData';
 import {TextWindow} from '../TextWindow';
 
@@ -43,8 +45,8 @@ export class Executor {
     : ExecutionSequence | null
   {
     if (sequence in this.sequenceData) {
-      return new ExecutionSequence(this.engine, this.sequenceData[sequence], actor,
-        this.worldActorLookup);
+      return new ExecutionSequence(this.engine, this.sequenceData[sequence],
+        actor, this.worldActorLookup);
     } else {
       console.error(`Could not find sequence named "${sequence}".`)
       return null;
@@ -61,35 +63,41 @@ export class ExecutionSequence {
     private actor: ExecutionActor,
     private allActors: ExecutionActorLookup
   ) {
-    this.win = new TextWindow(this.engine, () => {});
   }
 
-  public executeNext(): boolean {
+  public run() {
+  }
+
+  protected executeNext(): Promise<boolean> {
     if (this.actions.length > this.actionIdx) {
-      this.execute(this.actions[this.actionIdx]);
-      return true;
+      this.execute(this.actions[this.actionIdx])
+        .then(() => Promise.resolve(true))
     }
-    return false;
+    return Promise.resolve(false);
   }
 
-  private win: TextWindow;
-
-  protected execute(action: SequenceAction) {
+  protected execute(action: SequenceAction): Promise<void> {
     if (SequenceAction.isASay(action)) {
-      // TODO: Activate the text prompt with a say message.
-      this.win.renew(action.text, this.engine, action.color);
+      return new Promise((resolve, reject) => {
+        let window = new TextWindow(this.engine, () => resolve(), action.text,
+          action.color ? ex.Color.fromHex(action.color) : undefined);
+      })
     } else if (SequenceAction.isAPrompt(action)) {
       // TODO: Activate the text prompt with a prompt message.
     } else if (SequenceAction.isAMove(action)) {
       this.actor.move([action.destination[0], action.destination[1]]);
+      return Promise.resolve();
     } else if (SequenceAction.isAExec(action)) {
       // TODO: Execute special command.
+      return Promise.resolve();
     } else if (SequenceAction.isAChangeDefaultSequence(action)) {
       if (action.actor in this.allActors) {
         this.allActors[action.actor].changeDefaultSequence(action.seq);
+        return Promise.resolve();
       } else {
-        console.error(`Actor "${action.actor}" could not be found.`);
+        return Promise.reject(`Actor "${action.actor}" could not be found.`)
       }
     }
+    return Promise.reject(`Unknown action ${action.action}.`);
   }
 }

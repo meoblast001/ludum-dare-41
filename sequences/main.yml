@@ -1,13 +1,10 @@
 greeting:
-  - action: move
-    dest: [50, 0]
   - action: say
     text: Welcome to Ludum Dare 41!
-  - action: prompt
-    text: Do you like this game?
-    options:
-      - "Yes"
-      - "No"
+
+first_talk:
+  - action: say
+    text: Hello. I'm a friend.
   - action: change_def_seq
     actor: friend
     seq: end_game
