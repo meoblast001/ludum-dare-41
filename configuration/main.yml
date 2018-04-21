@@ -1,0 +1,11 @@
+player:
+  texture: 'cross.png'
+  position: [0, 0]
+resources:
+  textures:
+    - "cross.png"
+actors:
+  - name: 'friend'
+    texture: 'cross.png'
+    defaultSeq: 'greeting'
+    position: [50, 50]
