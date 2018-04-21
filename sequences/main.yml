@@ -1,6 +1,6 @@
 greeting:
   - action: move
-    dest: [5, 0]
+    dest: [50, 0]
   - action: say
     text: Welcome to Ludum Dare 41!
   - action: prompt
