@@ -11,6 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "astar-typescript": "0.0.442",
     "excalibur": "^0.16.0"
   },
   "devDependencies": {
