@@ -5,6 +5,8 @@ import {TextWindow} from '../TextWindow';
 
 export interface ExecutionWorld {
   getExecutionActors(): ExecutionActor[];
+  add(actor: ex.Actor): void;
+  remove(actor: ex.Actor): void;
 }
 
 export interface ExecutionActor {
@@ -13,17 +15,15 @@ export interface ExecutionActor {
   changeDefaultSequence(sequence: string): void;
 }
 
-type ExecutionActorLookup = { [name: string]: ExecutionActor };
-
 export class Executor {
   private static singleton: Executor;
 
-  private worldActorLookup: ExecutionActorLookup = {};
+  private world?: ExecutionWorld;
 
   protected constructor(
     private sequenceData: SequenceCatalog,
     private engine: ex.Engine
-    ) {
+  ) {
   }
 
   public static initialise(engine: ex.Engine, sequenceData: SequenceCatalog) {
@@ -35,18 +35,20 @@ export class Executor {
   }
 
   public changeWorld(world: ExecutionWorld) {
-    this.worldActorLookup = {};
-    for (let actor of world.getExecutionActors()) {
-      this.worldActorLookup[actor.name] = actor;
-    }
+    this.world = world;
   }
 
   public beginAction(actor: ExecutionActor, sequence: string)
     : ExecutionSequence | null
   {
     if (sequence in this.sequenceData) {
-      return new ExecutionSequence(this.engine, this.sequenceData[sequence],
-        actor, this.worldActorLookup);
+      if (this.world) {
+        return new ExecutionSequence(this.engine, this.sequenceData[sequence],
+          actor, this.world);
+      } else {
+        console.error("There is no world. Initialise executor.");
+        return null;
+      }
     } else {
       console.error(`Could not find sequence named "${sequence}".`)
       return null;
@@ -54,24 +56,42 @@ export class Executor {
   }
 }
 
+type ExecutionActorLookup = { [name: string]: ExecutionActor };
+
 export class ExecutionSequence {
   private actionIdx: number = 0;
+  private worldActorLookup: ExecutionActorLookup = {};
 
   public constructor(
     private engine: ex.Engine,
     private actions: SequenceAction[],
     private actor: ExecutionActor,
-    private allActors: ExecutionActorLookup
+    private world: ExecutionWorld
   ) {
+    for (let actor of world.getExecutionActors()) {
+      this.worldActorLookup[actor.name] = actor;
+    }
   }
 
   public run() {
+    // Execute each next action after another until all actions are completed.
+    let execute = () => {
+      this.executeNext().then(cont => {
+          if (cont) {
+            execute();
+          }
+        })
+        .catch((error) => {
+          console.error(`In promise: ${error}`);
+        });
+    }
+    execute();
   }
 
   protected executeNext(): Promise<boolean> {
     if (this.actions.length > this.actionIdx) {
-      this.execute(this.actions[this.actionIdx])
-        .then(() => Promise.resolve(true))
+      return this.execute(this.actions[this.actionIdx++])
+        .then(() => true);
     }
     return Promise.resolve(false);
   }
@@ -79,9 +99,14 @@ export class ExecutionSequence {
   protected execute(action: SequenceAction): Promise<void> {
     if (SequenceAction.isASay(action)) {
       return new Promise((resolve, reject) => {
-        let window = new TextWindow(this.engine, () => resolve(), action.text,
-          undefined, action.color ? ex.Color.fromHex(action.color) : undefined);
-      })
+        let window = new TextWindow(this.engine, () => {
+            this.world.remove(window);
+            resolve();
+          },
+          action.text, undefined,
+          action.color ? ex.Color.fromHex(action.color) : undefined);
+        this.world.add(window);
+      });
     } else if (SequenceAction.isAPrompt(action)) {
       // TODO: Activate the text prompt with a prompt message.
     } else if (SequenceAction.isAMove(action)) {
@@ -91,8 +116,8 @@ export class ExecutionSequence {
       // TODO: Execute special command.
       return Promise.resolve();
     } else if (SequenceAction.isAChangeDefaultSequence(action)) {
-      if (action.actor in this.allActors) {
-        this.allActors[action.actor].changeDefaultSequence(action.seq);
+      if (action.actor in this.worldActorLookup) {
+        this.worldActorLookup[action.actor].changeDefaultSequence(action.seq);
         return Promise.resolve();
       } else {
         return Promise.reject(`Actor "${action.actor}" could not be found.`)

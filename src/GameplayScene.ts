@@ -1,11 +1,13 @@
 import * as ex from 'excalibur';
 import * as Config from './Configuration';
 import { Resources } from './Resources';
+import { Player } from './Player';
 import { ResponsiveActor } from './ResponsiveActor';
 import {TextWindow} from './TextWindow';
-import { Executor } from './actionSystem/Executor';
+import { ExecutionWorld, ExecutionActor, Executor }
+  from './actionSystem/Executor';
 
-export default class GameplayScene extends ex.Scene {
+export default class GameplayScene extends ex.Scene implements ExecutionWorld {
   public static readonly Name = "GameplayScene";
   public static readonly FriendActorName = "friend";
 
@@ -18,6 +20,20 @@ export default class GameplayScene extends ex.Scene {
   public onInitialize(engine: ex.Engine) {
     this.camera = new ex.BaseCamera();
     this.configure(this.config);
+    Executor.getSingleton().changeWorld(this);
+
+    let friend = this.getActorByName(GameplayScene.FriendActorName);
+    if (friend) {
+      let action = Executor.getSingleton()
+        .beginAction(friend, this.config.startSeq);
+      if (action) {
+        action.run();
+      } else {
+        console.error(`Start action "${this.config.startSeq}" does not exist.`)
+      }
+    } else {
+      console.error("There is no friend in the scene.");
+    }
   }
 
   public onActivate() { }
@@ -31,22 +47,19 @@ export default class GameplayScene extends ex.Scene {
     return null;
   }
 
+  public getExecutionActors(): ExecutionActor[] {
+    return Object.keys(this.namedActors).map(key => this.namedActors[key]);
+  }
+
   private configure(config: Config.Configuration) {
     this.addPlayer(config.player);
     for (let actorConfig of config.actors) {
       this.addActor(actorConfig);
     }
-
-    let friend = this.getActorByName(GameplayScene.FriendActorName);
-    if (friend) {
-      Executor.getSingleton().beginAction(friend, config.startSeq);
-    } else {
-      console.error("There is no friend in the scene.");
-    }
   }
 
   private addPlayer(config: Config.Player) {
-    let player = new ex.Actor();
+    let player = new Player(this);
     this.positionActor(player, config);
 
     let texture = this.loadTexture(config);

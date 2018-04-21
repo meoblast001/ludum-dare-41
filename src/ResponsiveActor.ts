@@ -43,6 +43,13 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
   }
 
   public executeDefaultSequence() {
-    Executor.getSingleton().beginAction(this, this._defaultSequence);
+    let action
+      = Executor.getSingleton().beginAction(this, this._defaultSequence);
+    if (action) {
+      action.run();
+    } else {
+      console.error(`Default action "${this._defaultSequence}" of `
+        + `"${this.name}" does not exist.`);
+    }
   }
 }
