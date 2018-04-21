@@ -73,7 +73,7 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
   }
 
   private addActor(config: Config.Actor) {
-    let actor = new ResponsiveActor(config.name, config.defaultSeq, [[]]);
+    let actor = new ResponsiveActor(config.name, config.defaultSeq, []);
     this.positionActor(actor, config);
 
     let texture = this.loadTexture(config);
