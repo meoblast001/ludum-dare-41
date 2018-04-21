@@ -13,6 +13,10 @@ export namespace SequenceAction {
     return subject.action == 'move';
   }
 
+  export function isADelay(subject: SequenceAction): subject is Delay {
+    return subject.action == 'delay';
+  }
+
   export function isAExec(subject: SequenceAction): subject is Exec {
     return subject.action == 'exec';
   }
@@ -39,6 +43,10 @@ export interface Prompt extends Say {
 
 export interface Move extends SequenceAction {
   destination: [number, number];
+}
+
+export interface Delay extends SequenceAction {
+  millis: number;
 }
 
 export interface Exec extends SequenceAction {

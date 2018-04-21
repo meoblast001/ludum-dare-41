@@ -112,6 +112,10 @@ export class ExecutionSequence {
     } else if (SequenceAction.isAMove(action)) {
       this.actor.move([action.destination[0], action.destination[1]]);
       return Promise.resolve();
+    } else if (SequenceAction.isADelay(action)) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, action.millis);
+      });
     } else if (SequenceAction.isAExec(action)) {
       // TODO: Execute special command.
       return Promise.resolve();
