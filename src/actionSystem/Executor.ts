@@ -80,7 +80,7 @@ export class ExecutionSequence {
     if (SequenceAction.isASay(action)) {
       return new Promise((resolve, reject) => {
         let window = new TextWindow(this.engine, () => resolve(), action.text,
-          action.color ? ex.Color.fromHex(action.color) : undefined);
+          undefined, action.color ? ex.Color.fromHex(action.color) : undefined);
       })
     } else if (SequenceAction.isAPrompt(action)) {
       // TODO: Activate the text prompt with a prompt message.

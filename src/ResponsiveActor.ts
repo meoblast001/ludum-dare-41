@@ -1,7 +1,7 @@
 import * as ex from 'excalibur';
 import { IAAStarField, IAAStarFieldNode, AAStar, AAStarSimpleField, SimpleNode }
   from "aastar";
-import { ExecutionActor } from './actionSystem/Executor';
+import { Executor, ExecutionActor } from './actionSystem/Executor';
 
 export class ResponsiveActor extends ex.Actor implements ExecutionActor
 {
