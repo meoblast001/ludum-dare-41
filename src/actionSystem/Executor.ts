@@ -80,6 +80,7 @@ export class ExecutionSequence {
       this.win.renew(action.text, this.engine, action.color);
     } else if (SequenceAction.isAPrompt(action)) {
       // TODO: Activate the text prompt with a prompt message.
+      this.win.renew(action.text, this.engine, action.color, action.options);
     } else if (SequenceAction.isAMove(action)) {
       this.actor.move([action.destination[0], action.destination[1]]);
     } else if (SequenceAction.isAExec(action)) {

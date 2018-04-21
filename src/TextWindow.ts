@@ -2,7 +2,13 @@ import * as ex from 'excalibur';
 let wrap: ((input: string, options?: { width: number }) => string) = require('word-wrap'); 
 
 export class TextWindow extends ex.UIActor {
-  public constructor (engine: ex.Engine, onClose: () => void, displayText?: string, col?: ex.Color) {
+  public constructor (
+    engine: ex.Engine,
+    onClose: () => void,
+    displayText?: string,
+    opts?: string[],
+    col?: ex.Color)
+  {
     super()
     this.labels = new Array(4);
     this.text = new Array();
@@ -14,6 +20,9 @@ export class TextWindow extends ex.UIActor {
     this.color = ex.Color.White;
     if (displayText) {
       this.renew(displayText, engine, col);
+    }
+    if (opts && displayText) {
+      this.renew(displayText, engine, col, opts);
     }
     this.on ('postupdate', this.adjOnSpace(engine, col));
     console.log(this.text.length);
@@ -44,19 +53,41 @@ export class TextWindow extends ex.UIActor {
     }
   }
     
-  public renew (intext: string, engine: ex.Engine, col?: ex.Color): void {
+  public renew (
+    intext: string,
+    engine: ex.Engine,
+    col?: ex.Color,
+    opts?: string[]): void
+  {
     this.opacity = 1;
     this.index = 0;
-    this.text = this.unLines(intext, engine.drawWidth / 4);
-    this.fillLabels(this.index, col)
+    if (!opts) {
+      this.text = this.unLines(intext, engine.drawWidth / 4);
+      this.fillLabels(this.index, col)
+    } else {
+      this.text[0] = intext;
+      for (let i:number = 0; i < opts.length; i++) {
+        this.text[i + 1] = "> " + opts[i];
+        this.labels[this.optIndex + 1].color = ex.Color.Green;
+      }
+    }
     for (var label of this.labels) {
       label.opacity = 1;
     }
   }
 
+  public changeOpt(delta: number): void {
+    this.labels[this.optIndex].color = this.labels[this.optIndex + delta].color;
+    this.optIndex += delta;
+  }
+
   private text: string[];
 
+  private options?: string[];
+
   private index: number = 0;
+
+  private optIndex: number = 0;
 
   private labels: ex.Label[];
 
