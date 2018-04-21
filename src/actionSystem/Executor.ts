@@ -108,7 +108,16 @@ export class ExecutionSequence {
         this.world.add(window);
       });
     } else if (SequenceAction.isAPrompt(action)) {
-      // TODO: Activate the text prompt with a prompt message.
+      return new Promise((resolve, reject) => {
+        let window = new TextWindow(this.engine, () => {
+            this.world.remove(window);
+            resolve();
+          },
+          // TODO: Respond to options.
+          action.text, action.options.map(option => option.text),
+          action.color ? ex.Color.fromHex(action.color) : undefined);
+        this.world.add(window);
+      });
     } else if (SequenceAction.isAMove(action)) {
       this.actor.move([action.destination[0], action.destination[1]]);
       return Promise.resolve();
@@ -127,6 +136,6 @@ export class ExecutionSequence {
         return Promise.reject(`Actor "${action.actor}" could not be found.`)
       }
     }
-    return Promise.reject(`Unknown action ${action.action}.`);
+    return Promise.reject(`Unknown action "${action.action}".`);
   }
 }

@@ -38,7 +38,12 @@ export interface Say extends SequenceAction {
 }
 
 export interface Prompt extends Say {
-  options: string[];
+  options: PromptOption[];
+}
+
+export interface PromptOption {
+  text: string;
+  nextSeq: string;
 }
 
 export interface Move extends SequenceAction {
