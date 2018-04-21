@@ -4,24 +4,31 @@ let wrap: ((input: string, options?: { width: number }) => string) = require('wo
 export class TextWindow extends ex.UIActor {
   public constructor (engine: ex.Engine, displayText: string, col?: ex.Color) {
     super()
-    this.labels = new Array(3);
+    this.labels = new Array(2);
     this.text = new Array();
     this.pos.x = 0;
     this.pos.y = engine.drawHeight - engine.drawHeight / 4;
     this.setWidth(engine.drawWidth);
     this.setHeight(engine.drawHeight / 4);
-    this.renew(displayText, engine, col);
     this.color = ex.Color.White;
-    this.on ('postupdate', this.adjOnClick(engine));
+    this.renew(displayText, engine, col);
+    this.on ('postupdate', this.adjOnSpace(engine, col));
+    console.log(this.text.length);
   }
 
-  public adjOnClick (engine: ex.Engine): (() => void) {
+  public adjOnSpace (engine: ex.Engine, col?: ex.Color): (() => void) {
     return () => {
-      if (engine.input.keyboard.isHeld(ex.Input.Keys.Space)) {
-        if (this.text[this.index + this.text.length]) {
-          console.log("fold");
-          this.fillLabels(this.index + this.text.length);
-          this.index = this.index + this.text.length;
+      if (engine.input.keyboard.wasReleased(ex.Input.Keys.Space)) {
+        if (this.text[this.index + this.labels.length]) {
+          this.index = this.index + this.labels.length;
+          console.log("fold", this.index);
+	  for (var label of this.labels) {
+	    label.opacity = 0;
+	  }
+          this.fillLabels(this.index, col);
+	  for (var label of this.labels) {
+	    label.opacity = 1;
+	  }
         } else {
           console.log("bye");
           this.opacity = 0;
@@ -66,7 +73,7 @@ export class TextWindow extends ex.UIActor {
       this.labels[i].fontSize = 40;
       this.labels[i].textAlign = ex.TextAlign.Center;
       if (col) {
-        this.labels[i].color = ex.Color.Blue;
+        this.labels[i].color = col;
       }
       this.add(this.labels[i]);
     }
