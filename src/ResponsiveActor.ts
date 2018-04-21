@@ -9,6 +9,7 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
   private astarInstance: astar.AStarFinder;
   private astarGrid: astar.Grid;
   private gridPos: [number, number];
+  private path: number[][];
 
   public constructor(
     name: string,
@@ -19,6 +20,7 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
   {
     super(config);
     this.gridPos = pos;
+    this.path = new Array();
     this.name = name;
     this._defaultSequence = defSeq;
     this.astarGrid = new astar.Grid(matrix);
@@ -28,7 +30,7 @@ export class ResponsiveActor extends ex.Actor implements ExecutionActor
 
   public move(target: [number, number]) {
     // TODO: Perform move through A*.
-    return this.astarInstance.findPath(this.gridPos, target);
+    this.path = this.astarInstance.findPath(this.gridPos, target);
   }
 
   public changeDefaultSequence(sequence: string) {
