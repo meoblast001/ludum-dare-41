@@ -16,10 +16,13 @@
     "word-wrap": "^1.2.3"
   },
   "devDependencies": {
+    "@types/node": "^9.6.6",
     "awesome-typescript-loader": "^5.0.0",
+    "json-loader": "^0.5.7",
     "typescript": "^2.8.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "^4.5.0",
-    "webpack-cli": "^2.0.14"
+    "webpack-cli": "^2.0.14",
+    "yaml-include-loader": "^1.0.0"
   }
 }

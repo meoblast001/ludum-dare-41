@@ -26,7 +26,9 @@ module.exports = env => {
     ] : [ ],
     module: {
       rules: [
-        { test: /\.tsx?$/, loader: 'awesome-typescript-loader' }
+        { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+        { test: /\.yml/, loader: 'json-loader!yaml-include-loader' },
+        { test: /\.json$/, loader: 'json-loader' }
       ]
     },
     optimization: {
