@@ -2,6 +2,7 @@ import * as ex from 'excalibur';
 import { Promise } from 'es6-promise';
 import { SequenceCatalog, SequenceAction } from './SequenceData';
 import {TextWindow} from '../TextWindow';
+import { UserCommandRegistry } from '../../include/UserCommandRegistry';
 
 export interface ExecutionWorld {
   getExecutionActors(): ExecutionActor[];
@@ -164,8 +165,14 @@ export class ExecutionSequence {
         setTimeout(resolve, action.millis);
       });
     } else if (SequenceAction.isAExec(action)) {
-      // TODO: Execute special command.
-      return Promise.resolve(null);
+      let command = UserCommandRegistry.getSingleton()
+        .getCommandByName(action.command);
+      if (command) {
+        return command.exec(this.world as any, this.actor as any)
+          .then(() => null);
+      } else {
+        return Promise.reject(`Command "${action.command}" unknown.`);
+      }
     } else if (SequenceAction.isAChangeDefaultSequence(action)) {
       if (action.actor in this.worldActorLookup) {
         this.worldActorLookup[action.actor].changeDefaultSequence(action.seq);

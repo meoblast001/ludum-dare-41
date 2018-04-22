@@ -55,7 +55,7 @@ export interface Delay extends SequenceAction {
 }
 
 export interface Exec extends SequenceAction {
-  event: string;
+  command: string;
 }
 
 export interface ChangeDefaultSequence extends SequenceAction {
