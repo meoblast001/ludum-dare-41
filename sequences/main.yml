@@ -110,9 +110,9 @@ light_on_0:
     text: "Just a Moment"
     color: "#ff0000"
   - action: exec
-    event: friend_goto_lightswitch
+    command: friend_goto_lightswitch
   - action: exec
-    event: lights_on
+    command: lights_on
   - action: change_def_seq
     actor: friend
     seq: lightsoff
@@ -122,9 +122,9 @@ lightsoff:
     text: "Can you turn off the light, please?"
     color: "#0000ff"
   - action: exec
-    event: friend_goto_lightswitch
+    command: friend_goto_lightswitch
   - action: exec
-    event: lights_off
+    command: lights_off
   - action: change_def_seq
     actor: friend
     seq: lightson
@@ -134,9 +134,9 @@ lightson:
     text: "Can you turn on the light, please?"
     color: "#0000ff"
   - action: exec
-    event: friend_goto_lightswitch
+    command: friend_goto_lightswitch
   - action: exec
-    event: lights_on
+    command: lights_on
   - action: change_def_seq
     actor: friend
     seq: lightsoff
@@ -153,4 +153,4 @@ end_game:
   - action: say
     text: End of the game!
   - action: exec
-    event: win_game
+    command: win_game
