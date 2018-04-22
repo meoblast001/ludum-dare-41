@@ -4,6 +4,9 @@ import { SequenceCatalog, SequenceAction } from './SequenceData';
 import {TextWindow} from '../TextWindow';
 import { UserCommandRegistry } from '../../include/UserCommandRegistry';
 
+// Import all commands.
+import '../../user_commands/Index';
+
 export interface ExecutionWorld {
   getExecutionActors(): ExecutionActor[];
   add(actor: ex.Actor): void;
