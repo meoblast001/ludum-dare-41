@@ -1,13 +1,108 @@
 greeting:
   - action: say
-    text: Welcome to Ludum Dare 41!
+    text: "Where am I?"
+    color: "#a0a0ff"
+  - action: say
+    text: "It's dark in here..."
+    color: "#a0a0ff"
+  - action: say
+    text: "*Rustle*"
+    color: "#a0a0a0"
+  - action: say
+    text: "Who is there? Who are you?"
+    color: "#0000ff"
+  - action: say
+    text: "Hello?"
+    color: "#ff0000"
+  - action: say
+    text: "Press 'F' to talk to the other person"
+    color: "#000000"
 
 first_talk:
+  - action: prompt
+    text: "What do you want to ask?"
+    options:
+      - text: "Who are you?"
+        nextSeq: who_are_you
+      - text: "Where are we?"
+        nextSeq: where_are_we
+
+who_are_you:
   - action: say
-    text: Hello. I'm a friend.
-  - action: change_def_seq
+    text: "Who are you?"
+    color: "#0000ff"
+  - action: delay
+    millis: 500
+  - action: say
+    text: "I'm Janet"
+    color: "#ff0000"
+  - change_def_seq:
     actor: friend
-    seq: end_game
+    seq: where_are_we
+
+where_are_we:
+  - action: say
+    text: "Where are we?"
+    color: "#0000ff"
+  - action: delay
+    millis: 500
+  - action: say
+    text: "I don't know"
+    color: "#ff0000"
+  - change_def_seq:
+    actor: friend
+    seq: light
+
+light:
+  - action: say
+    text: "Dou you have a light?"
+    color: "#0000ff"
+  - action: delay
+    millis: 500
+  - action: say
+    text: "*Rustle*"
+    color: "#a0a0a0"
+  - action: delay
+    millis: 500
+  - action: say
+    text: "*Rustle*"
+    color: "#a0a0a0"
+  - action: say
+    text: "No"
+    color: "#0000ff"
+  - change_def_seq:
+    actor: switch
+    seq: init
+  - change_def_seq:
+    actor: friend
+    seq: lightswitch
+
+lightswitch:
+  - action: say
+    text: "I see a dim glowing light. Looks like a lightswitch to me."
+    color: "#ff0000"
+  - action: delay
+    millis: 2000
+  - action: say
+    text: "It's a light switch. Should I turn it on?"
+    color: "#ff0000"
+  - action: prompt
+    text: "Turn it on?"
+    color: "#000000"
+    options:
+      - text: "Yes"
+        nextSeq: light_on_0
+      - text: "No"
+        nextSeq: so_dark
+
+light_on_0:
+  - action: exec
+    event: lights_on
+
+so_dark:
+  - action: say
+    text: "It's so dark in here..."
+    color: "#0000ff"
 
 end_game:
   - action: say

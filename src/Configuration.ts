@@ -5,6 +5,7 @@ export interface Configuration {
   resources: Resources;
   player: Player;
   actors: Actor[];
+  map: MapDefintion;
 }
 
 export interface Resources {
@@ -29,4 +30,27 @@ export interface Textureable {
 
 export interface Spriteable {
   sprite?: string;
+}
+
+export interface MapDefintion {
+  cells: MapCellDefinition[];
+  tileSheets: MapTileSheet[];
+  width: number;
+  height: number;
+  tileWidth: number;
+  tileHeight: number;
+}
+
+export interface MapCellDefinition {
+  x: number;
+  y: number;
+  tileId: number;
+  sheetId: number;
+}
+
+export interface MapTileSheet {
+  id: number;
+  path: string;
+  cols: number;
+  rows: number;
 }
