@@ -3,6 +3,7 @@ export interface Configuration {
   gridUnitSize: number;
   worldSize: [number, number],
   resources: Resources;
+  spriteDefinitions: [SpriteDefinition];
   player: Player;
   actors: Actor[];
   map: MapDefintion;
@@ -11,6 +12,29 @@ export interface Configuration {
 export interface Resources {
   textures: string[];
   tilemaps: string[];
+  sprites: string[];
+}
+
+export interface SpriteDefinition {
+  name: string;
+  texture: string;
+  frameSize: [number, number];
+  cols: number;
+  rows: number;
+  defaultStatic: string;
+  statics: StaticDefinition[];
+  animations: AnimationDefinition[];
+}
+
+export interface StaticDefinition {
+  name: string;
+  frameIndex: number;
+}
+
+export interface AnimationDefinition {
+  name: string;
+  frameIndices: number[];
+  speed: number;
 }
 
 export interface Player extends Positioned, Textureable, Spriteable {

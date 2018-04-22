@@ -17,8 +17,10 @@ const Loader = new ex.Loader();
 for (let resource of Resources.getSingleton().textures) {
   Loader.addResource(resource);
 }
-
 for (let resource of Resources.getSingleton().tilemaps) {
+  Loader.addResource(resource);
+}
+for (let resource of Resources.getSingleton().sprites) {
   Loader.addResource(resource);
 }
 

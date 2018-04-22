@@ -1,6 +1,7 @@
 import * as ex from 'excalibur';
 import { Promise } from 'es6-promise';
 import * as path from 'pathfinding';
+import { Sprite } from './Sprite';
 
 export interface GridProvider {
   getGridSize(): [number, number];
@@ -17,6 +18,7 @@ export enum Direction {
 export class GridActor extends ex.Actor {
   public gridPosition: ex.Vector;
   private currentMovement: MovementTask | null = null;
+  private sprite: Sprite | null = null;
 
   constructor(
     private unitSize: number,
@@ -27,20 +29,33 @@ export class GridActor extends ex.Actor {
     this.gridPosition = new ex.Vector(0, 0);
   }
 
-  public moveOnce(direction: Direction): Promise<void> | null {
+  public addSprite(sprite: Sprite) {
+    this.sprite = sprite;
+    sprite.setupActor(this);
+  }
+
+  public moveOnce(direction: Direction): Promise<void> {
     switch (direction) {
       case Direction.Left:
-        return this.move([this.gridPosition.x - 1, this.gridPosition.y]);
+        this.setDrawing('move_left');
+        return this.move([this.gridPosition.x - 1, this.gridPosition.y])
+          .then(() => { this.setDrawing('idle_left'); });
       case Direction.Up:
-        return this.move([this.gridPosition.x, this.gridPosition.y - 1]);
+        this.setDrawing('move_up');
+        return this.move([this.gridPosition.x, this.gridPosition.y - 1])
+          .then(() => { this.setDrawing('idle_up'); });
       case Direction.Right:
-        return this.move([this.gridPosition.x + 1, this.gridPosition.y]);
+        this.setDrawing('move_right');
+        return this.move([this.gridPosition.x + 1, this.gridPosition.y])
+          .then(() => { this.setDrawing('idle_right'); });
       case Direction.Down:
-        return this.move([this.gridPosition.x, this.gridPosition.y + 1]);
+        this.setDrawing('move_down');
+        return this.move([this.gridPosition.x, this.gridPosition.y + 1])
+        .then(() => { this.setDrawing('idle_down'); });
     }
   }
 
-  public move(target: [number, number]): Promise<void> | null {
+  public move(target: [number, number]): Promise<void> {
     if (!this.currentMovement && this.movementInBounds(target)) {
       return new Promise((res, rej) => {
         this.currentMovement = new MovementTask(
@@ -52,7 +67,7 @@ export class GridActor extends ex.Actor {
         );
       });
     } else {
-      return null;
+      return Promise.reject("Already moving.");
     }
   }
 

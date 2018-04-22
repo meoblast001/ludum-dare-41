@@ -7,6 +7,7 @@ import {TextWindow} from './TextWindow';
 import { ExecutionWorld, ExecutionActor, Executor }
   from './actionSystem/Executor';
 import { GridProvider, GridActor } from './GridActor';
+import { Sprite } from './Sprite';
 
 export default class GameplayScene extends ex.Scene
   implements ExecutionWorld, GridProvider
@@ -18,6 +19,7 @@ export default class GameplayScene extends ex.Scene
   private gridUnitSize: number = 0;
   private worldSize: ex.Vector = new ex.Vector(0, 0);
   private tileMap: ex.TileMap;
+  private sprites: { [name: string]: Sprite } = {};
 
   public constructor(private config: Config.Configuration, engine?: ex.Engine) {
     super(engine)
@@ -95,6 +97,8 @@ export default class GameplayScene extends ex.Scene
   }
 
   private configure(config: Config.Configuration) {
+    this.loadAllSprites(config.spriteDefinitions);
+
     this.gridUnitSize = config.gridUnitSize;
     this.worldSize = new ex.Vector(config.worldSize[0], config.worldSize[1]);
     this.addPlayer(config.player);
@@ -127,6 +131,31 @@ export default class GameplayScene extends ex.Scene
     });
   }
 
+  private loadAllSprites(config: Config.SpriteDefinition[]) {
+    for (let spriteDef of config) {
+      let texture = Resources.getSingleton().getSprite(spriteDef.texture);
+      if (texture) {
+        let sprite = new Sprite(this.engine, spriteDef.name, texture,
+          spriteDef.frameSize, spriteDef.cols, spriteDef.rows);
+
+        for (let staticDef of spriteDef.statics) {
+          sprite.addStatic(staticDef.name, staticDef.frameIndex);
+        }
+
+        sprite.setDefaultStatic(spriteDef.defaultStatic);
+
+        for (let animationDef of spriteDef.animations) {
+          sprite.addAnimation(animationDef.name, animationDef.frameIndices,
+            animationDef.speed);
+        }
+
+        this.sprites[spriteDef.name] = sprite;
+      } else {
+        console.error(`Sprite texture "${spriteDef.texture} not found.`);
+      }
+    }
+  }
+
   private addPlayer(config: Config.Player) {
     let player = new Player(this, this.gridUnitSize, this);
     this.positionActor(player, config);
@@ -136,7 +165,9 @@ export default class GameplayScene extends ex.Scene
       player.addDrawing(texture);
     }
 
-    // TODO: Load sprite.
+    if (config.sprite) {
+      this.loadSpriteToGridActor(player, config.sprite);
+    }
 
     this.add(player);
   }
@@ -151,7 +182,9 @@ export default class GameplayScene extends ex.Scene
       actor.addDrawing(texture);
     }
 
-    // TODO: Load sprite.
+    if (config.sprite) {
+      this.loadSpriteToGridActor(actor, config.sprite);
+    }
 
     this.add(actor);
     this.namedActors[config.name] = actor;
@@ -166,5 +199,14 @@ export default class GameplayScene extends ex.Scene
       return Resources.getSingleton().getTexture(config.texture);
     }
     return null;
+  }
+
+  private loadSpriteToGridActor(actor: GridActor, spriteName: string) {
+    if (spriteName in this.sprites) {
+      let sprite = this.sprites[spriteName];
+      actor.addSprite(sprite);
+    } else {
+      console.error(`Sprite "${spriteName}" could not be found.`);
+    }
   }
 }

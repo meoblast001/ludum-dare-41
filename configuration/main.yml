@@ -2,7 +2,7 @@ startSeq: greeting
 gridUnitSize: 50
 worldSize: [30, 15]
 player:
-  texture: 'cross.png'
+  sprite: player
   position: [0, 0]
 resources:
   textures:
@@ -10,6 +10,37 @@ resources:
   tilemaps:
     - 'walls.png'
     - 'cafe.png'
+  sprites:
+    - 'player.png'
+spriteDefinitions:
+  - name: player
+    texture: 'player.png'
+    frameSize: [32, 32]
+    cols: 4
+    rows: 4
+    defaultStatic: idle_down
+    statics:
+      - name: idle_down
+        frameIndex: 0
+      - name: idle_up
+        frameIndex: 4
+      - name: idle_left
+        frameIndex: 9
+      - name: idle_right
+        frameIndex: 12
+    animations:
+      - name: move_down
+        frameIndices: [0, 1, 2, 3]
+        speed: 250
+      - name: move_up
+        frameIndices: [4, 5, 6, 7]
+        speed: 250
+      - name: move_left
+        frameIndices: [8, 9, 10, 8]
+        speed: 250
+      - name: move_right
+        frameIndices: [11, 12, 13, 12]
+        speed: 250
 actors:
   - name: 'friend'
     texture: 'cross.png'
