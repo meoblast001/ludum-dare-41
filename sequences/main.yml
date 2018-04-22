@@ -70,11 +70,11 @@ light:
   - action: say
     text: "No"
     color: "#0000ff"
-  - change_def_seq:
+  - action: change_def_seq
     actor: friend
-    seq: lightswitch
+    seq: lightswitch0
 
-lightswitch:
+lightswitch0:
   - action: say
     text: "I see a dim glowing light. Looks like a lightswitch to me."
     color: "#ff0000"
@@ -92,14 +92,62 @@ lightswitch:
       - text: "No"
         nextSeq: so_dark
 
+lightswitch1:
+  - action: say
+    text: "Should I turn the lightswitch on?"
+    color: "#ff0000"
+  - action: prompt
+    text: "Turn it on?"
+    color: "#000000"
+    options:
+      - text: "Yes"
+        nextSeq: light_on_0
+      - text: "No"
+        nextSeq: so_dark
+
 light_on_0:
+  - action: say
+    text: "Just a Moment"
+    color: "#ff0000"
+  - action: exec
+    event: friend_goto_lightswitch
   - action: exec
     event: lights_on
+  - action: change_def_seq
+    actor: friend
+    seq: lightsoff
+
+lightsoff:
+  - action: say
+    text: "Can you turn off the light, please?"
+    color: "#0000ff"
+  - action: exec
+    event: friend_goto_lightswitch
+  - action: exec
+    event: lights_off
+  - action: change_def_seq
+    actor: friend
+    seq: lightson
+
+lightson:
+  - action: say
+    text: "Can you turn on the light, please?"
+    color: "#0000ff"
+  - action: exec
+    event: friend_goto_lightswitch
+  - action: exec
+    event: lights_on
+  - action: change_def_seq
+    actor: friend
+    seq: lightsoff
 
 so_dark:
   - action: say
     text: "It's so dark in here..."
     color: "#0000ff"
+  - action: change_def_seq
+    actor: friend
+    seq: lightswitch1
 
 end_game:
   - action: say
