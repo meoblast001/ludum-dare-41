@@ -49,7 +49,7 @@ where_are_we:
   - action: say
     text: "I don't know"
     color: "#ff0000"
-  - change_def_seq:
+  - action: change_def_seq
     actor: friend
     seq: light
 
