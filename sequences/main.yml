@@ -71,9 +71,6 @@ light:
     text: "No"
     color: "#0000ff"
   - change_def_seq:
-    actor: switch
-    seq: init
-  - change_def_seq:
     actor: friend
     seq: lightswitch
 
