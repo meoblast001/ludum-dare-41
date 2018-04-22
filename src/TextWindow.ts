@@ -14,7 +14,7 @@ export class TextWindow extends ex.UIActor {
 
   public constructor (
     engine: ex.Engine,
-    private closeHandler: () => void,
+    private closeHandler: (selectedIdx?: number) => void,
     displayText: string,
     private opts?: string[],
     private col?: ex.Color)
@@ -58,7 +58,7 @@ export class TextWindow extends ex.UIActor {
           label.opacity = 1;
         }
       } else {
-        this.closeHandler();
+        this.closeHandler(this.optIndex !== null ? this.optIndex : undefined);
       }
     }
 

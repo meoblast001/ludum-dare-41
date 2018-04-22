@@ -59,6 +59,14 @@ export class Executor {
 
 type ExecutionActorLookup = { [name: string]: ExecutionActor };
 
+class ExecuteNextResult {
+  public constructor (
+    public cont: boolean,
+    public nextSeq: string | null
+  ) {
+  }
+}
+
 export class ExecutionSequence {
   private actionIdx: number = 0;
   private worldActorLookup: ExecutionActorLookup = {};
@@ -76,11 +84,27 @@ export class ExecutionSequence {
   }
 
   public run() {
+    // Records the next sequence to run if there is one.
+    let nextSeq: string | null = null;
+
     // Execute each next action after another until all actions are completed.
     let execute = () => {
-      this.executeNext().then(cont => {
-          if (cont) {
+      this.executeNext().then(result => {
+          // If result contains a sequence, store it as the next sequence.
+          if (result.nextSeq) {
+            nextSeq = result.nextSeq;
+          }
+
+          if (result.cont) {
             execute();
+          } else if (nextSeq) {
+            // Sequence over and a new sequence will be executed.
+            let next = this.executor.beginAction(this.actor, nextSeq);
+            if (next) {
+              next.run();
+            } else {
+              console.error(`Next sequence "${nextSeq}" could not be found.`);
+            }
           }
         })
         .catch((error) => {
@@ -90,15 +114,15 @@ export class ExecutionSequence {
     execute();
   }
 
-  protected executeNext(): Promise<boolean> {
+  protected executeNext(): Promise<ExecuteNextResult> {
     if (this.actions.length > this.actionIdx) {
       return this.execute(this.actions[this.actionIdx++])
-        .then(() => true);
+        .then(nextSeq => new ExecuteNextResult(true, nextSeq));
     }
-    return Promise.resolve(false);
+    return Promise.resolve(new ExecuteNextResult(false, null));
   }
 
-  protected execute(action: SequenceAction): Promise<void> {
+  protected execute(action: SequenceAction): Promise<string | null> {
     if (SequenceAction.isASay(action)) {
       return new Promise((resolve, reject) => {
         this.executor.isBlocked = true;
@@ -114,30 +138,38 @@ export class ExecutionSequence {
     } else if (SequenceAction.isAPrompt(action)) {
       return new Promise((resolve, reject) => {
         this.executor.isBlocked = true;
-        let window = new TextWindow(this.engine, () => {
+        let window = new TextWindow(this.engine, (selectedIdx?: number) => {
             this.world.remove(window);
             this.executor.isBlocked = false;
-            resolve();
+            if (selectedIdx !== undefined
+                && selectedIdx < action.options.length
+            ) {
+              resolve(action.options[selectedIdx].nextSeq);
+            } else {
+              console.error("Incorrectly selected option.")
+              resolve(null);
+            }
           },
           // TODO: Respond to options.
-          action.text, action.options.map(option => option.text),
+          action.text,
+          action.options.map(option => option.text),
           action.color ? ex.Color.fromHex(action.color) : undefined);
         this.world.add(window);
       });
     } else if (SequenceAction.isAMove(action)) {
       this.actor.move([action.destination[0], action.destination[1]]);
-      return Promise.resolve();
+      return Promise.resolve(null);
     } else if (SequenceAction.isADelay(action)) {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, action.millis);
       });
     } else if (SequenceAction.isAExec(action)) {
       // TODO: Execute special command.
-      return Promise.resolve();
+      return Promise.resolve(null);
     } else if (SequenceAction.isAChangeDefaultSequence(action)) {
       if (action.actor in this.worldActorLookup) {
         this.worldActorLookup[action.actor].changeDefaultSequence(action.seq);
-        return Promise.resolve();
+        return Promise.resolve(null);
       } else {
         return Promise.reject(`Actor "${action.actor}" could not be found.`)
       }
