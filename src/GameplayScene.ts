@@ -6,12 +6,17 @@ import { ResponsiveActor } from './ResponsiveActor';
 import {TextWindow} from './TextWindow';
 import { ExecutionWorld, ExecutionActor, Executor }
   from './actionSystem/Executor';
+import { GridProvider, GridActor } from './GridActor';
 
-export default class GameplayScene extends ex.Scene implements ExecutionWorld {
+export default class GameplayScene extends ex.Scene
+  implements ExecutionWorld, GridProvider
+{
   public static readonly Name = "GameplayScene";
   public static readonly FriendActorName = "friend";
 
   private namedActors: { [name: string]: ResponsiveActor } = {};
+  private gridUnitSize: number = 0;
+  private worldSize: ex.Vector = new ex.Vector(0, 0);
 
   public constructor(private config: Config.Configuration, engine?: ex.Engine) {
     super(engine)
@@ -51,7 +56,28 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     return Object.keys(this.namedActors).map(key => this.namedActors[key]);
   }
 
+  public getGridSize(): [number, number] {
+    return [this.worldSize.x, this.worldSize.y];
+  }
+
+  public getGrid(): boolean[][] {
+    // Create an array of size Y filled with arrays of size X filled with false.
+    let grid = (new Array(this.worldSize.y)).fill(null)
+      .map(x => (new Array(this.worldSize.x)).fill(false));
+
+    for (let actor of this.actors) {
+      if (actor instanceof GridActor) {
+        let position = actor.gridPosition;
+        grid[position.y][position.x] = true;
+      }
+    }
+
+    return grid;
+  }
+
   private configure(config: Config.Configuration) {
+    this.gridUnitSize = config.gridUnitSize;
+    this.worldSize = new ex.Vector(config.worldSize[0], config.worldSize[1]);
     this.addPlayer(config.player);
     for (let actorConfig of config.actors) {
       this.addActor(actorConfig);
@@ -59,7 +85,7 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
   }
 
   private addPlayer(config: Config.Player) {
-    let player = new Player(this);
+    let player = new Player(this, this.gridUnitSize, this);
     this.positionActor(player, config);
 
     let texture = this.loadTexture(config);
@@ -73,7 +99,8 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
   }
 
   private addActor(config: Config.Actor) {
-    let actor = new ResponsiveActor(config.name, config.defaultSeq, []);
+    let actor = new ResponsiveActor(config.name, config.defaultSeq,
+      this.gridUnitSize, this);
     this.positionActor(actor, config);
 
     let texture = this.loadTexture(config);
@@ -87,9 +114,8 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     this.namedActors[config.name] = actor;
   }
 
-  private positionActor(actor: ex.Actor, config: Config.Positioned) {
-    actor.pos.x = config.position[0];
-    actor.pos.y = config.position[1];
+  private positionActor(actor: GridActor, config: Config.Positioned) {
+    actor.gridPosition = new ex.Vector(config.position[0], config.position[1]);
   }
 
   private loadTexture(config: Config.Textureable): ex.Texture | null {

@@ -1,4 +1,6 @@
 startSeq: greeting
+gridUnitSize: 50
+worldSize: [30, 15]
 player:
   texture: 'cross.png'
   position: [0, 0]
@@ -9,4 +11,4 @@ actors:
   - name: 'friend'
     texture: 'cross.png'
     defaultSeq: 'first_talk'
-    position: [50, 50]
+    position: [5, 2]

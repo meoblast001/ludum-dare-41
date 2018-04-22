@@ -11,7 +11,7 @@ export interface ExecutionWorld {
 
 export interface ExecutionActor {
   readonly name: string;
-  move(target: [number, number]): Promise<void>;
+  move(target: [number, number]): Promise<void> | null;
   changeDefaultSequence(sequence: string): void;
 }
 
@@ -19,6 +19,7 @@ export class Executor {
   private static singleton: Executor;
 
   private world?: ExecutionWorld;
+  public isBlocked: boolean = false;
 
   protected constructor(
     private sequenceData: SequenceCatalog,
@@ -43,8 +44,8 @@ export class Executor {
   {
     if (sequence in this.sequenceData) {
       if (this.world) {
-        return new ExecutionSequence(this.engine, this.sequenceData[sequence],
-          actor, this.world);
+        return new ExecutionSequence(this, this.engine,
+          this.sequenceData[sequence], actor, this.world);
       } else {
         console.error("There is no world. Initialise executor.");
         return null;
@@ -63,6 +64,7 @@ export class ExecutionSequence {
   private worldActorLookup: ExecutionActorLookup = {};
 
   public constructor(
+    private executor: Executor,
     private engine: ex.Engine,
     private actions: SequenceAction[],
     private actor: ExecutionActor,
@@ -99,8 +101,10 @@ export class ExecutionSequence {
   protected execute(action: SequenceAction): Promise<void> {
     if (SequenceAction.isASay(action)) {
       return new Promise((resolve, reject) => {
+        this.executor.isBlocked = true;
         let window = new TextWindow(this.engine, () => {
             this.world.remove(window);
+            this.executor.isBlocked = false
             resolve();
           },
           action.text, undefined,
@@ -109,8 +113,10 @@ export class ExecutionSequence {
       });
     } else if (SequenceAction.isAPrompt(action)) {
       return new Promise((resolve, reject) => {
+        this.executor.isBlocked = true;
         let window = new TextWindow(this.engine, () => {
             this.world.remove(window);
+            this.executor.isBlocked = false;
             resolve();
           },
           // TODO: Respond to options.

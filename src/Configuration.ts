@@ -1,5 +1,7 @@
 export interface Configuration {
   startSeq: string;
+  gridUnitSize: number;
+  worldSize: [number, number],
   resources: Resources;
   player: Player;
   actors: Actor[];
