@@ -24,20 +24,22 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
       config.map.width / config.map.tileWidth,
       config.map.height / config.map.tileHeight
     );
+    // Current version of Excalibur doesn't set these values in the constructor.
+    this.tileMap.x = 0;
+    this.tileMap.y = 0;
+    this.tileMap.cellWidth = config.map.tileWidth;
+    this.tileMap.cellHeight = config.map.tileHeight;
+    this.tileMap.rows = config.map.width / config.map.tileWidth;
+    this.tileMap.cols = config.map.height / config.map.tileHeight;
   }
 
   public onInitialize(engine: ex.Engine) {
     this.camera = new ex.BaseCamera();
-    //this.tileMap = new ex.TileMap(
-    //  0,
-    //  0,
-    //  this.config.map.tileWidth,
-    //  this.config.map.tileHeight,
-    //  this.config.map.width / this.config.map.tileWidth,
-    //  this.config.map.height / this.config.map.tileHeight
-    //);
+
     this.configure(this.config);
     Executor.getSingleton().changeWorld(this);
+
+    this.addTileMap(this.tileMap);
 
     let friend = this.getActorByName(GameplayScene.FriendActorName);
     if (friend) {
@@ -73,6 +75,7 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     for (let actorConfig of config.actors) {
       this.addActor(actorConfig);
     }
+
     // build sprite sheets
     this.config.map.tileSheets.forEach(sheet => {
       let item = Resources.getSingleton().getTilemap(sheet.path)
@@ -94,9 +97,6 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     // fill cells with sprites
     this.config.map.cells.forEach(cell => {
       let ts = new ex.TileSprite(cell.sheetId.toString(), cell.tileId);
-      console.log(cell);
-      console.log(ts);
-      console.log(this.tileMap.getCell(cell.x, cell.y));
       this.tileMap.getCell(cell.x, cell.y).pushSprite(ts);
     });
   }
