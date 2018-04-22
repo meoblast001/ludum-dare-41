@@ -1,0 +1,5 @@
+https://opengameart.org/content/characters-2 (CC0)
+* "NPC1 (2).png" => "sprites/player.png"
+* "NPC3 (1).png" => "sprites/npc.png"
+
+# TODO: Attributions for tilesets/*

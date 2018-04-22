@@ -51,7 +51,7 @@ export class GridActor extends ex.Actor {
       case Direction.Down:
         this.setDrawing('move_down');
         return this.move([this.gridPosition.x, this.gridPosition.y + 1])
-        .then(() => { this.setDrawing('idle_down'); });
+          .then(() => { this.setDrawing('idle_down'); });
     }
   }
 
