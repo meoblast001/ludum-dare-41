@@ -36,7 +36,7 @@ who_are_you:
   - action: say
     text: "I'm Janet"
     color: "#ff0000"
-  - change_def_seq:
+  - action: change_def_seq
     actor: friend
     seq: where_are_we
 
