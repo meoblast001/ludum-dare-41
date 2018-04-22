@@ -73,25 +73,25 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     for (let actorConfig of config.actors) {
       this.addActor(actorConfig);
     }
-    // build sprite sheets
-    this.config.map.tileSheets.forEach(sheet => {
-      this.tileMap.registerSpriteSheet(
-        sheet.id.toString(),
-	new ex.SpriteSheet(
-	  new ex.Texture(sheet.path),
-	  sheet.cols,
-	  sheet.rows,
-	  this.config.map.tileWidth,
-	  this.config.map.tileHeight
-	)
-      );
-    });
-    // fill cells with sprites
-    this.config.map.cells.forEach(cell => {
-      let ts = new ex.TileSprite(cell.sheetId.toString(), cell.tileId);
-      console.log(cell);
-      this.tileMap.getCell(cell.x, cell.y).pushSprite(ts);
-    });
+    // // build sprite sheets
+    // this.config.map.tileSheets.forEach(sheet => {
+    //   this.tileMap.registerSpriteSheet(
+    //     sheet.id.toString(),
+    //     new ex.SpriteSheet(
+    //       new ex.Texture(sheet.path),
+    //       sheet.cols,
+    //       sheet.rows,
+    //       this.config.map.tileWidth,
+    //       this.config.map.tileHeight
+    //     )
+    //   );
+    // });
+    // // fill cells with sprites
+    // this.config.map.cells.forEach(cell => {
+    //   let ts = new ex.TileSprite(cell.sheetId.toString(), cell.tileId);
+    //   console.log(cell);
+    //   this.tileMap.getCell(cell.x, cell.y).pushSprite(ts);
+    // });
   }
 
   private addPlayer(config: Config.Player) {
