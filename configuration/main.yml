@@ -5,8 +5,26 @@ player:
 resources:
   textures:
     - "cross.png"
+  tilemaps:
+    - 'walls.png'
+    - 'cafe.png'
 actors:
   - name: 'friend'
     texture: 'cross.png'
     defaultSeq: 'first_talk'
     position: [50, 50]
+map:
+  cells:
+    - x: 0
+      y: 0
+      tileId: 0
+      sheetId: 0
+  tileSheets:
+    - id: 0
+      path: 'walls.png'
+      cols: 3
+      rows: 4
+  width: 96
+  height: 128
+  tileWidth: 32
+  tileHeight: 32

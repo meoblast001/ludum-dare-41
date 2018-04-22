@@ -12,13 +12,30 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
   public static readonly FriendActorName = "friend";
 
   private namedActors: { [name: string]: ResponsiveActor } = {};
+  private tileMap: ex.TileMap;
 
   public constructor(private config: Config.Configuration, engine?: ex.Engine) {
     super(engine)
+    this.tileMap = new ex.TileMap(
+      0,
+      0,
+      config.map.tileWidth,
+      config.map.tileHeight,
+      config.map.width / config.map.tileWidth,
+      config.map.height / config.map.tileHeight
+    );
   }
 
   public onInitialize(engine: ex.Engine) {
     this.camera = new ex.BaseCamera();
+    //this.tileMap = new ex.TileMap(
+    //  0,
+    //  0,
+    //  this.config.map.tileWidth,
+    //  this.config.map.tileHeight,
+    //  this.config.map.width / this.config.map.tileWidth,
+    //  this.config.map.height / this.config.map.tileHeight
+    //);
     this.configure(this.config);
     Executor.getSingleton().changeWorld(this);
 
@@ -56,6 +73,32 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     for (let actorConfig of config.actors) {
       this.addActor(actorConfig);
     }
+    // build sprite sheets
+    this.config.map.tileSheets.forEach(sheet => {
+      let item = Resources.getSingleton().getTilemap(sheet.path)
+      if (item) {
+        this.tileMap.registerSpriteSheet(
+          sheet.id.toString(),
+          new ex.SpriteSheet(
+            item,
+            sheet.cols,
+            sheet.rows,
+            this.config.map.tileWidth,
+            this.config.map.tileHeight
+          )
+        );
+      } else {
+        console.error(`no tilemap ${sheet.path} found!`);
+      }
+    });
+    // fill cells with sprites
+    this.config.map.cells.forEach(cell => {
+      let ts = new ex.TileSprite(cell.sheetId.toString(), cell.tileId);
+      console.log(cell);
+      console.log(ts);
+      console.log(this.tileMap.getCell(cell.x, cell.y));
+      this.tileMap.getCell(cell.x, cell.y).pushSprite(ts);
+    });
   }
 
   private addPlayer(config: Config.Player) {
