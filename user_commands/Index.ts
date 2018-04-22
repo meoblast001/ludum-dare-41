@@ -1,1 +1,2 @@
 import './HelloWorldCommand';
+import './Lights';

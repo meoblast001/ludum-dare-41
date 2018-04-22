@@ -55,7 +55,7 @@ where_are_we:
 
 light:
   - action: say
-    text: "Dou you have a light?"
+    text: "Do you have a light?"
     color: "#0000ff"
   - action: delay
     millis: 500
@@ -69,7 +69,7 @@ light:
     color: "#a0a0a0"
   - action: say
     text: "No"
-    color: "#0000ff"
+    color: "#ff0000"
   - action: change_def_seq
     actor: friend
     seq: lightswitch0
@@ -109,8 +109,10 @@ light_on_0:
   - action: say
     text: "Just a Moment"
     color: "#ff0000"
-  - action: exec
-    command: friend_goto_lightswitch
+  - action: move
+    destination:
+      - 9
+      - 9
   - action: exec
     command: lights_on
   - action: change_def_seq
@@ -121,8 +123,10 @@ lightsoff:
   - action: say
     text: "Can you turn off the light, please?"
     color: "#0000ff"
-  - action: exec
-    command: friend_goto_lightswitch
+  - action: move
+    destination:
+      - 9
+      - 9
   - action: exec
     command: lights_off
   - action: change_def_seq
@@ -133,8 +137,10 @@ lightson:
   - action: say
     text: "Can you turn on the light, please?"
     color: "#0000ff"
-  - action: exec
-    command: friend_goto_lightswitch
+  - action: move
+    destination:
+      - 9
+      - 9
   - action: exec
     command: lights_on
   - action: change_def_seq
