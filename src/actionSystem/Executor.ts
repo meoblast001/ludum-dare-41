@@ -7,6 +7,10 @@ import { UserCommandRegistry } from '../../include/UserCommandRegistry';
 // Import all commands.
 import '../../user_commands/Index';
 
+function debug(message?: any, ...optionalParams: any[]) {
+  console.debug("Executor: " + message, ...optionalParams);
+}
+
 export interface ExecutionWorld {
   getExecutionActors(): ExecutionActor[];
   add(actor: ex.Actor): void;
@@ -15,7 +19,7 @@ export interface ExecutionWorld {
 
 export interface ExecutionActor {
   readonly name: string;
-  move(target: [number, number]): Promise<void> | null;
+  move(target: [number, number]): Promise<void>;
   changeDefaultSequence(sequence: string): void;
 }
 
@@ -48,7 +52,7 @@ export class Executor {
   {
     if (sequence in this.sequenceData) {
       if (this.world) {
-        return new ExecutionSequence(this, this.engine,
+        return new ExecutionSequence(this, this.engine, sequence,
           this.sequenceData[sequence], actor, this.world);
       } else {
         console.error("There is no world. Initialise executor.");
@@ -78,6 +82,7 @@ export class ExecutionSequence {
   public constructor(
     private executor: Executor,
     private engine: ex.Engine,
+    private name: string,
     private actions: SequenceAction[],
     private actor: ExecutionActor,
     private world: ExecutionWorld
@@ -88,6 +93,8 @@ export class ExecutionSequence {
   }
 
   public run() {
+    debug(`Executing sequence "${this.name}".`);
+
     // Records the next sequence to run if there is one.
     let nextSeq: string | null = null;
 
@@ -105,6 +112,7 @@ export class ExecutionSequence {
             // Sequence over and a new sequence will be executed.
             let next = this.executor.beginAction(this.actor, nextSeq);
             if (next) {
+              debug(`Continueing to next sequence: "${nextSeq}".`);
               next.run();
             } else {
               console.error(`Next sequence "${nextSeq}" could not be found.`);
@@ -120,8 +128,13 @@ export class ExecutionSequence {
 
   protected executeNext(): Promise<ExecuteNextResult> {
     if (this.actions.length > this.actionIdx) {
+      debug(`Executing action "${this.actions[this.actionIdx].action}" `
+        + `(idx: ${this.actionIdx}).`);
       return this.execute(this.actions[this.actionIdx++])
-        .then(nextSeq => new ExecuteNextResult(true, nextSeq));
+        .then(nextSeq => {
+          debug("Action finished!");
+          return new ExecuteNextResult(true, nextSeq)
+        });
     }
     return Promise.resolve(new ExecuteNextResult(false, null));
   }
@@ -130,9 +143,10 @@ export class ExecutionSequence {
     if (SequenceAction.isASay(action)) {
       return new Promise((resolve, reject) => {
         this.executor.isBlocked = true;
+        debug("Opening \"say\" window.");
         let window = new TextWindow(this.engine, () => {
             this.world.remove(window);
-            this.executor.isBlocked = false
+            this.executor.isBlocked = false;
             resolve();
           },
           action.text, undefined,
@@ -142,6 +156,7 @@ export class ExecutionSequence {
     } else if (SequenceAction.isAPrompt(action)) {
       return new Promise((resolve, reject) => {
         this.executor.isBlocked = true;
+        debug("Opening \"prompt\" window.");
         let window = new TextWindow(this.engine, (selectedIdx?: number) => {
             this.world.remove(window);
             this.executor.isBlocked = false;
@@ -161,8 +176,10 @@ export class ExecutionSequence {
         this.world.add(window);
       });
     } else if (SequenceAction.isAMove(action)) {
-      this.actor.move([action.destination[0], action.destination[1]]);
-      return Promise.resolve(null);
+      debug(`Executing move on "${this.actor.name}" to `
+        + `(${action.destination[0]}, ${action.destination[1]}).`);
+      return this.actor.move([action.destination[0], action.destination[1]])
+        .then(() => null);
     } else if (SequenceAction.isADelay(action)) {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, action.millis);
@@ -171,6 +188,8 @@ export class ExecutionSequence {
       let command = UserCommandRegistry.getSingleton()
         .getCommandByName(action.command);
       if (command) {
+        debug(`Executing user command "${action.command}" on `
+          + `"${this.actor.name}"`);
         return command.exec(this.world as any, this.actor as any)
           .then(() => null);
       } else {
@@ -178,6 +197,8 @@ export class ExecutionSequence {
       }
     } else if (SequenceAction.isAChangeDefaultSequence(action)) {
       if (action.actor in this.worldActorLookup) {
+        debug(`Changing default sequence of "${action.actor}" to `
+          + `"${action.seq}".`);
         this.worldActorLookup[action.actor].changeDefaultSequence(action.seq);
         return Promise.resolve(null);
       } else {
