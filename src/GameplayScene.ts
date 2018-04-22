@@ -28,6 +28,14 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
 
   public onInitialize(engine: ex.Engine) {
     this.camera = new ex.BaseCamera();
+    this.tileMap = new ex.TileMap(
+      0,
+      0,
+      this.config.map.tileWidth,
+      this.config.map.tileHeight,
+      this.config.map.width / this.config.map.tileWidth,
+      this.config.map.height / this.config.map.tileHeight
+    );
     this.configure(this.config);
     Executor.getSingleton().changeWorld(this);
 
@@ -81,6 +89,7 @@ export default class GameplayScene extends ex.Scene implements ExecutionWorld {
     // fill cells with sprites
     this.config.map.cells.forEach(cell => {
       let ts = new ex.TileSprite(cell.sheetId.toString(), cell.tileId);
+      console.log(cell);
       this.tileMap.getCell(cell.x, cell.y).pushSprite(ts);
     });
   }
