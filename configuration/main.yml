@@ -5,6 +5,9 @@ player:
 resources:
   textures:
     - "cross.png"
+  tilemaps:
+    - 'walls.png'
+    - 'cafe.png'
 actors:
   - name: 'friend'
     texture: 'cross.png'
@@ -18,7 +21,7 @@ map:
       sheetId: 0
   tileSheets:
     - id: 0
-      path: 'tilesets/walls.png'
+      path: 'walls.png'
       cols: 3
       rows: 4
   width: 96

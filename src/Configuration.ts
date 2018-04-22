@@ -8,6 +8,7 @@ export interface Configuration {
 
 export interface Resources {
   textures: string[];
+  tilemaps: string[];
 }
 
 export interface Player extends Positioned, Textureable, Spriteable {
