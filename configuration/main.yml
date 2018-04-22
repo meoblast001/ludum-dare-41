@@ -1,9 +1,9 @@
 startSeq: greeting
 gridUnitSize: 50
-worldSize: [30, 15]
+worldSize: [20, 10]
 player:
   sprite: player
-  position: [0, 0]
+  position: [5, 5]
 resources:
   textures:
     - "cross.png"
@@ -74,7 +74,7 @@ actors:
   - name: 'friend'
     sprite: npc
     defaultSeq: 'first_talk'
-    position: [5, 2]
+    position: [15, 5]
 map:
   cells:
     - x: 0

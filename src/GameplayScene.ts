@@ -170,6 +170,8 @@ export default class GameplayScene extends ex.Scene
     }
 
     this.add(player);
+
+    this.camera.addStrategy(new ex.ElasticToActorStrategy(player, 0.5, 0.75));
   }
 
   private addActor(config: Config.Actor) {
