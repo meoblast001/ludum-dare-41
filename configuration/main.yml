@@ -1,6 +1,6 @@
 startSeq: greeting
-gridUnitSize: 50
-worldSize: [20, 10]
+gridUnitSize: 32
+worldSize: [24, 17]
 player:
   sprite: player
   position: [5, 5]
@@ -76,17 +76,13 @@ actors:
     defaultSeq: 'first_talk'
     position: [15, 5]
 map:
-  cells:
-    - x: 0
-      y: 0
-      tileId: 0
-      sheetId: 0
+  instance: !include ./map_instance
   tileSheets:
     - id: 0
       path: 'walls.png'
       cols: 3
       rows: 4
-  width: 96
-  height: 128
+  width: 24
+  height: 17
   tileWidth: 32
   tileHeight: 32

@@ -1,0 +1,146 @@
+sheetId: 0
+cols:
+  - cells:
+    # Column 0
+    - tileId: 3
+    - tileId: 6
+      repeat: 15
+    - tileId: 9
+  - cells:
+    # Column 1
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 2
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 3
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 4
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 5
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 6
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 7
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 8
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 9
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 10
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 11
+    - tileId: 5
+    - tileId: 8
+      repeat: 15
+    - tileId: 11
+  - cells:
+    # Column 12
+    - tileId: 3
+    - tileId: 6
+      repeat: 15
+    - tileId: 9
+  - cells:
+    # Column 13
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 14
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 15
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 16
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 17
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 18
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 19
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 20
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 21
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 22
+    - tileId: 4
+    - tileId: 7
+      repeat: 15
+    - tileId: 10
+  - cells:
+    # Column 23
+    - tileId: 5
+    - tileId: 8
+      repeat: 15
+    - tileId: 11

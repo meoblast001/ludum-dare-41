@@ -58,7 +58,7 @@ export interface Spriteable {
 }
 
 export interface MapDefintion {
-  cells: MapCellDefinition[];
+  instance: MapInstanceDefinition;
   tileSheets: MapTileSheet[];
   width: number;
   height: number;
@@ -66,11 +66,18 @@ export interface MapDefintion {
   tileHeight: number;
 }
 
-export interface MapCellDefinition {
-  x: number;
-  y: number;
-  tileId: number;
+export interface MapInstanceDefinition {
   sheetId: number;
+  cols: MapColDefinition[];
+}
+
+export interface MapColDefinition {
+  cells: MapCellDefinition[];
+}
+
+export interface MapCellDefinition {
+  tileId: number;
+  repeat?: number;
 }
 
 export interface MapTileSheet {

@@ -28,16 +28,16 @@ export default class GameplayScene extends ex.Scene
       0,
       config.map.tileWidth,
       config.map.tileHeight,
-      config.map.width / config.map.tileWidth,
-      config.map.height / config.map.tileHeight
+      config.map.height,
+      config.map.width
     );
     // Current version of Excalibur doesn't set these values in the constructor.
     this.tileMap.x = 0;
     this.tileMap.y = 0;
     this.tileMap.cellWidth = config.map.tileWidth;
     this.tileMap.cellHeight = config.map.tileHeight;
-    this.tileMap.rows = config.map.width / config.map.tileWidth;
-    this.tileMap.cols = config.map.height / config.map.tileHeight;
+    this.tileMap.rows = config.map.height;
+    this.tileMap.cols = config.map.width;
   }
 
   public onInitialize(engine: ex.Engine) {
@@ -125,10 +125,25 @@ export default class GameplayScene extends ex.Scene
       }
     });
     // fill cells with sprites
-    this.config.map.cells.forEach(cell => {
-      let ts = new ex.TileSprite(cell.sheetId.toString(), cell.tileId);
-      this.tileMap.getCell(cell.x, cell.y).pushSprite(ts);
-    });
+    let mapInstance = this.config.map.instance;
+    let curPos: [number, number] = [0, 0];
+    for (let col of mapInstance.cols) {
+      for (let cell of col.cells) {
+        let repeat = cell.repeat !== undefined ? cell.repeat : 1;
+
+        let ts = new ex.TileSprite(mapInstance.sheetId.toString(), cell.tileId);
+        for (let i = 0; i < repeat; ++i) {
+          let tmCell = this.tileMap.getCell(curPos[0], curPos[1]);
+          if (tmCell) {
+            tmCell.pushSprite(ts);
+          } else {
+            console.warn(`Can not draw tile at (${curPos[0]}, ${curPos[1]}).`);
+          }
+          ++curPos[1];
+        }
+      }
+      curPos = [curPos[0] + 1, 0];
+    }
   }
 
   private loadAllSprites(config: Config.SpriteDefinition[]) {
