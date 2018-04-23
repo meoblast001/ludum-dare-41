@@ -7,12 +7,10 @@ player:
 resources:
   textures:
     - "cross.png"
-  tilemaps:
-    - 'walls.png'
-    - 'cafe.png'
-  sprites:
     - 'player.png'
     - 'npc.png'
+    - 'walls.png'
+    - 'cafe.png'
 spriteDefinitions:
   - name: player
     texture: 'player.png'

@@ -108,7 +108,7 @@ export default class GameplayScene extends ex.Scene
 
     // build sprite sheets
     this.config.map.tileSheets.forEach(sheet => {
-      let item = Resources.getSingleton().getTilemap(sheet.path)
+      let item = Resources.getSingleton().getTexture(sheet.path)
       if (item) {
         this.tileMap.registerSpriteSheet(
           sheet.id.toString(),
@@ -148,7 +148,7 @@ export default class GameplayScene extends ex.Scene
 
   private loadAllSprites(config: Config.SpriteDefinition[]) {
     for (let spriteDef of config) {
-      let texture = Resources.getSingleton().getSprite(spriteDef.texture);
+      let texture = Resources.getSingleton().getTexture(spriteDef.texture);
       if (texture) {
         let sprite = new Sprite(this.engine, spriteDef.name, texture,
           spriteDef.frameSize, spriteDef.cols, spriteDef.rows);
